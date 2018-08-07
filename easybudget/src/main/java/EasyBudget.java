@@ -4,72 +4,82 @@
  * and open the template in the editor.
  */
 
-import java.io.File;
-import java.util.Stack;
-
 /**
  * @author John
+ * This class serves as the controller of the BudgetManager. It relays expenses
+ * and assets to the output.
  */
 
 public class EasyBudget {
 
-    /**
-     * @param args the command line arguments
-     */
-    private bankData myBank;
-    private spendingData myWallet;
+    //private Window window;
+    private BudgetManager userBudget;
+    private int totalExpenses;
+    private int totalAssets;
     
-    private  static File toWrite = new File("PersonalBudget.txt");
-    
-    private static Stack<EasyBudget> currentweeksBudget = new Stack();
-    private static Stack<EasyBudget> lastweeksBudget = new Stack();
-    
-    EasyBudget()
-    {
-        myBank = new bankData();
-        myWallet = new spendingData();
-        
+    EasyBudget(BudgetManager userBudget){
+        //this.window = new Window();
+        this.userBudget = userBudget;
+        this.totalAssets = this.userBudget.calculateTotalAssets();
+        this.totalExpenses = this.userBudget.calculateExpenses();
     }
-    
-        static boolean toRun(int input){
-            return input == 1;
-        }
-        
-        static void promptUser(int key){
-        switch (key) {
-            case 0:
-                System.out.print("Please enter a cash value for the amount "
-                        +  "in your savings account: ");
-                break;
-            case 1:
-                System.out.print("Please enter a cash value for "
-                        + "your checking account: ");
-                break;
-            case 2:
-                System.out.print("Please enter a cash value for "
-                        + "how much you would like to withdraw this week: ");
-                break;
-            case 3:
-                System.out.print("Please enter a cash value for "
-                        + "how much you would like to deposit this week: ");
-                break;
-            case 4:
-                System.out.print("Please enter a cash value for "
-                        + "how much you would like to transfer this week: ");
-                break;
-            default:
-                System.out.println("That code is not recognized");
-                break;
-        }
-                
-        }
-        
-        static boolean checkChecking(String answer){
-            String userAnswer = answer;
-        String toLowerCase = userAnswer.toLowerCase();
 
-            return toLowerCase.equals("checking");
-        }
-        
+    public BudgetManager getUserBudget() {
+        return userBudget;
+    }
 
+    public void setUserBudget(BudgetManager userBudget) {
+        this.userBudget = userBudget;
+    }
+
+    public int getTotalExpenses() {
+        return totalExpenses;
+    }
+
+    public void setTotalExpenses(int totalExpenses) {
+        this.totalExpenses = totalExpenses;
+    }
+
+    public int getTotalAssets() {
+        return totalAssets;
+    }
+
+    public void setTotalAssets(int totalAssets) {
+        this.totalAssets = totalAssets;
+    }
+
+    public int budgetUserWallet(){
+        int walletAmount = userBudget.calculateWalletMax();
+        return walletAmount;
+    }
+
+    public int budgetUserExpenses(){
+        int totalExpenses = userBudget.calculateExpenses();
+        return totalExpenses;
+    }
+
+    public int budgetTotalUserAssets(){
+        int totalAssets = userBudget.calculateTotalAssets();
+        return totalAssets;
+    }
+
+    public int budgetUsableAssets(){
+        int usableAssets = userBudget.calculateUsableAssets();
+        return usableAssets;
+    }
+
+    public int payExpenses(){
+        int difference = userBudget.calculateDifference(this.totalExpenses, this.totalAssets);
+        return difference;
+    }
+
+    @Override
+    public String toString() {
+        return "EasyBudget{" +
+                "userBudget=" + userBudget +
+                ", totalExpenses=" + totalExpenses +
+                ", totalAssets=" + totalAssets +
+                '}';
+    }
 }
+

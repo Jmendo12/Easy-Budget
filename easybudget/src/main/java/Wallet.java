@@ -15,19 +15,19 @@ public class Wallet {
 
     private int inHandCash;
     
-    public Wallet(int totalCash){
+    Wallet(int totalCash){
         this.inHandCash = totalCash;
     }
     
-    public int getinHandCash() {
+    int getinHandCash() {
         return inHandCash;
     }
 
-    public void setinHandCash(int totalCash) {
+    void setinHandCash(int totalCash) {
         this.inHandCash = totalCash;
     }
     
-    public void addFunds(int cash){
+    void addFunds(int cash){
         inHandCash += cash;
     }
     

@@ -97,4 +97,15 @@ public class BudgetManager {
         int sum = expenses - assets;
         return sum;
     }
+
+    @Override
+    public String toString() {
+        return "BudgetManager{" +
+                "userExpenses=" + userExpenses +
+                ", userAccount=" + userAccount +
+                ", userWallet=" + userWallet +
+                ", necessityFunds=" + necessityFunds +
+                ", recreationFunds=" + recreationFunds +
+                '}';
+    }
 }
