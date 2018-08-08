@@ -58,12 +58,32 @@ public class EBTest {
         return account.isSavingsEmpty();
     }
 
-    private boolean testBudgetUserWallet(int expectedValue, EasyBudget testBudget){
-        int calculatedValue = testBudget.getUserBudget().calculateWalletMax();
+    private boolean testWalletCalculate(int expectedValue, BudgetManager testBudget){
+        int calculatedValue = testBudget.calculateWalletMax();
         return expectedValue == calculatedValue;
     }
 
-    //boolean test
+    private boolean testExpensesCalculate(int expectedValue, BudgetManager testBudget){
+        int calculatedValue = testBudget.calculateExpenses();
+        return expectedValue == calculatedValue;
+    }
+
+    private boolean testTotalAssetsCalculate(int expectedValue, BudgetManager testBudget){
+        int calculatedValue = testBudget.calculateTotalAssets();
+        return expectedValue == calculatedValue;
+    }
+
+    private boolean testUsableAssetsCalculate(int expectedValue, BudgetManager testBudget){
+        int calculatedValue = testBudget.calculateUsableAssets();
+        return expectedValue == calculatedValue;
+    }
+
+    private boolean testPayExpenses(int expectedValue, BudgetManager testBudget){
+        int expenses = testBudget.calculateExpenses();
+        int assets = testBudget.calculateTotalAssets();
+        int calculatedValue = testBudget.calculateDifference( expenses, assets);
+        return expectedValue == calculatedValue;
+    }
 
     public static void main(String [] args) {
         EBTest test = new EBTest();
@@ -147,5 +167,42 @@ public class EBTest {
         System.out.println("Test for an empty saving account working as intended for an empty saving account: " +
                 accountCheck);
         accountCheck = false;
+
+        /*
+            Test EasyBudget methods - serves as an indirect test for the logic used in BudgetManager methods
+         */
+        BudgetManager testManager = new BudgetManager( testAccount, testWallet );
+        Expenses testExpense1 = new FoodExpenses(10);
+        Expenses testExpense2 = new RecreationExpenses(10);
+        testManager.addExpense(testExpense1);
+        testManager.addExpense(testExpense2);
+        boolean budgetCheck = false;
+
+        //  Initialize expected integer values
+        int expectedWalletAmount = (int) BudgetManager.WALLET_FACTOR * testAccount.getCheckingAmount();
+        int expectedUsableAssets = testAccount.getCheckingAmount() + testWallet.getinHandCash();
+        int expectedTotalAssets = testAccount.getCheckingAmount() + testAccount.getSavingsAmount();
+                testWallet.getinHandCash();
+        int expectedExpenses = testExpense1.getAmount() + testExpense2.getAmount();
+        int expectedDifference = expectedTotalAssets - expectedExpenses;
+
+        budgetCheck = test.testWalletCalculate( expectedWalletAmount, testManager);
+        System.out.println("Test for calculating amount for wallet working as intended: " + budgetCheck);
+        budgetCheck = false;
+
+        budgetCheck = test.testExpensesCalculate( expectedExpenses, testManager);
+        System.out.println("Test for calculating amount of expenses working as intended: " + budgetCheck);
+        budgetCheck = false;
+
+        budgetCheck = test.testTotalAssetsCalculate( expectedTotalAssets, testManager);
+        System.out.println("Test for calculating total amount of assets working as intended: " + budgetCheck);
+        budgetCheck = false;
+
+        budgetCheck = test.testUsableAssetsCalculate( expectedUsableAssets, testManager);
+        System.out.println("Test for calculating usable amount of assets working as intended: " + budgetCheck);
+        budgetCheck = false;
+
+        budgetCheck = test.testPayExpenses( expectedDifference, testManager);
+        System.out.println("Test for calculating expenses payment working as intended: " + budgetCheck);
     }
 }

@@ -18,12 +18,10 @@ public class BudgetManager {
     private ArrayList<Expenses> userExpenses;
     private BankAccount userAccount;
     private Wallet userWallet;
-    
-    private int necessityFunds;
-    private int recreationFunds;
+
     //Determines max amount a user should have in their wallet - 2% of
     // checking balance.
-    private final double WALLET_FACTOR = .02;
+    public static final double WALLET_FACTOR = .02;
 
     public BudgetManager(BankAccount userAccount, Wallet userWallet) {
         this.userExpenses = new ArrayList<Expenses>();
@@ -47,22 +45,6 @@ public class BudgetManager {
         this.userWallet = userWallet;
     }
 
-    public int getNecessityFunds() {
-        return necessityFunds;
-    }
-
-    public void setNecessityFunds(int necessityFunds) {
-        this.necessityFunds = necessityFunds;
-    }
-
-    public int getRecreationFunds() {
-        return recreationFunds;
-    }
-
-    public void setRecreationFunds(int recreationFunds) {
-        this.recreationFunds = recreationFunds;
-    }
-
     public void addExpense(Expenses expense){
         this.userExpenses.add(expense);
     }
@@ -71,14 +53,15 @@ public class BudgetManager {
         int sum = 0;
         for(int i = 0; i < userExpenses.size(); i++){
             Expenses expense = userExpenses.get(i);
-            sum += expense.getAmount();
+            if(expense.isPayed() == false)
+                sum += expense.getAmount();
         }
         return sum;
     }
 
     //This method determines a maximum amount of cash a user should have in their wallet depending on their bank account
     public int calculateWalletMax(){
-        int walletMax = (int) (this.WALLET_FACTOR * this.userAccount.getCheckingAmount());
+        int walletMax = (int) (WALLET_FACTOR * this.userAccount.getCheckingAmount());
         return  walletMax;
     }
     //This method calculates a user's total cash including their savings account
@@ -94,8 +77,15 @@ public class BudgetManager {
     }
     //Calculates whether the user does or does not have enough cash to pay their expenses
     public int calculateDifference(int expenses, int assets){
-        int sum = expenses - assets;
+        int sum = assets - expenses;
         return sum;
+    }
+
+    public void setExpensesPaid(){
+        for(int i = 0; i < userExpenses.size(); i++){
+            Expenses expense = userExpenses.get(i);
+            expense.setPayed(true);
+        }
     }
 
     @Override
@@ -104,8 +94,6 @@ public class BudgetManager {
                 "userExpenses=" + userExpenses +
                 ", userAccount=" + userAccount +
                 ", userWallet=" + userWallet +
-                ", necessityFunds=" + necessityFunds +
-                ", recreationFunds=" + recreationFunds +
                 '}';
     }
 }
