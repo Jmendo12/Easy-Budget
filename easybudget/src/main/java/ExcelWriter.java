@@ -9,6 +9,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,7 +19,7 @@ import java.util.Scanner;
 
 public class ExcelWriter {
 
-    private static String[] columns = {"Name", "Total Assets", "Usable Assets", "Total Expenses",
+    private static String[] columns = {"Date", "Name", "Total Assets", "Usable Assets", "Total Expenses",
             "Assets After Payment"};
 
     public static void main(String[] args){
@@ -58,19 +60,20 @@ public class ExcelWriter {
             cell.setCellStyle(headerCellStyle);
         }
 
-        //Create Cell Style for formatting Date
-        CellStyle dateCellStyle = workbook.createCellStyle();
-        dateCellStyle.setDataFormat(creationHelper.createDataFormat().getFormat("dd-MM-yyyy"));
+        //Create date with format
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        Date date = new Date();
 
         //Create other rows and cells with budget data
         int rowNum = 1;
         Row row = sheet.createRow(rowNum);
         //Create cells and populate with user data
-        row.createCell(0).setCellValue(userEB.getUserName());
-        row.createCell(1).setCellValue(userEB.getTotalAssets());
-        row.createCell(2).setCellValue(userEB.getUsableAssets());
-        row.createCell(3).setCellValue(userEB.getTotalExpenses());
-        row.createCell(4).setCellValue(0);
+        row.createCell(0).setCellValue(dateFormat.format(date));
+        row.createCell(1).setCellValue(userEB.getUserName());
+        row.createCell(2).setCellValue(userEB.getTotalAssets());
+        row.createCell(3).setCellValue(userEB.getUsableAssets());
+        row.createCell(4).setCellValue(userEB.getTotalExpenses());
+        row.createCell(5).setCellValue(userEB.getAssetsAfterPayment());
 
         //Resize all columns to fit the content size
         for(int i = 0; i < columns.length; i++){
